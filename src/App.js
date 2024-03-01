@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import EventList from './components/EventList';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import { jwtDecode } from "jwt-decode";
 
 const App = () => {
-  const [user, setUser] = useState({});
-  const [isSignedIn, setIsSignedIn] = useState({});
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const [googleScriptError, setGoogleScriptError] = useState(false);
-
 
   useEffect(() => {
     const initializeGoogleSignIn = async () => {
@@ -31,19 +31,18 @@ const App = () => {
     };
 
     initializeGoogleSignIn();
-  }, [user]);
+  }, []);
 
   const handleCallbackResp = (resp) => {
     console.log("encoded JWT token", resp.credential);
     const userObject = jwtDecode(resp.credential, { header: true });
     console.log("userObject..", userObject);
-    setUser(userObject);
+    alert('Login successfull !');
     setIsSignedIn(true);
     document.getElementById("signInDiv").hidden = true;
   };
 
   const handleSignOut = () => {
-    setUser({});
     setIsSignedIn(false);
     document.getElementById("signInDiv").hidden = false;
     setGoogleScriptError(false); // Reset error state
@@ -51,13 +50,21 @@ const App = () => {
 
   return (
     <div className='App'>
+      {
+        !isSignedIn &&
+        <h1 className="welcome-text">Welcome to the Event Management Project</h1>
+      }
       <div id="signInDiv"></div>
-      {isSignedIn && (
+      {isSignedIn ? (
         <div>
-          <button onClick={handleSignOut}>Sign Out</button>
+          <Stack direction="row" spacing={2}>
+            <Button variant="outlined" color="error" onClick={handleSignOut}>
+              Sign Out
+            </Button>
+          </Stack>
           <EventList />
         </div>
-      )}
+      ) : null}
       {googleScriptError && <p>Error loading Google API. Please check your network connection and try again.</p>}
     </div>
   );

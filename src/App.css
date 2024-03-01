@@ -1,5 +1,18 @@
 .App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.center-container {
   text-align: center;
+}
+
+.welcome-text {
+  font-size: 24px;
+  margin-bottom: 20px;
+  margin-left: 50px;
 }
 
 .App-logo {
