@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-const EventCreationForm = () => {
+const EventCreationForm = ({ onCancleCreate }) => {
   const [eventData, setEventData] = useState({
     name: '',
     startTime: '',
@@ -29,42 +29,47 @@ const EventCreationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await fetch('http://127.0.0.1:5000/events/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: eventData.name,
-                starttime: eventData.startTime,
-                endtime: eventData.endTime,
-                location: eventData.location,
-                description: eventData.description,
-                category: eventData.category,
-                bannerImage: eventData.bannerImage
-            })
-        });
-        if (!response.ok) {
-            throw new Error('Failed to create event: ' + response.status);
-        }
-
-        alert('Event created successfully!');
-        setEventData({
-          name: '',
-          startTime: '',
-          endTime: '',
-          location: '',
-          description: '',
-          category: '',
-          bannerImage: ''
+      const response = await fetch('http://127.0.0.1:5000/api/create/event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: eventData.name,
+          starttime: eventData.startTime,
+          endtime: eventData.endTime,
+          location: eventData.location,
+          description: eventData.description,
+          category: eventData.category,
+          bannerImage: eventData.bannerImage
+        })
       });
+      console.log("resp...", response)
+      if (!response.ok) {
+        const errorMessage = await response.text(); // Extract error message from response
+        alert('Failed to Create Event: ' + errorMessage);
+        return;
+      }
+
+      alert('Event Created Successfully !');
+      setEventData({
+        name: '',
+        startTime: '',
+        endTime: '',
+        location: '',
+        description: '',
+        category: '',
+        bannerImage: ''
+      });
+      onCancleCreate();
+
 
     } catch (error) {
-        console.error('Error creating event:', error);
+      console.error('Error Creating Event:', error);
     }
-};
+  };
 
-  
+
 
   return (
     <div>

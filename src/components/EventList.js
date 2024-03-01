@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button'; // Import Button component
+import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -20,6 +20,9 @@ const locations = [
   { value: 'Ahmedabad', label: 'Ahmedabad' },
   { value: 'Gandhinagar', label: 'Gandhinagar' },
   { value: 'Vadodara', label: 'Vadodara' },
+  { value: 'ahmedabad', label: 'Ahmedabad' },
+  { value: 'gandhinagar', label: 'Gandhinagar' },
+  { value: 'vadodara', label: 'Vadodara' },
 ];
 
 const categories = [
@@ -27,6 +30,9 @@ const categories = [
   { value: 'music', label: 'Music' },
   { value: 'dance', label: 'Dance' },
   { value: 'sports', label: 'Sports' },
+  { value: 'Music', label: 'Music' },
+  { value: 'Dance', label: 'Dance' },
+  { value: 'Sports', label: 'Sports' },
 ];
 
 const EventList = () => {
@@ -38,10 +44,9 @@ const EventList = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [createEvent, setCreateEvent] = useState(false);
 
-
   useEffect(() => {
     fetchEvents();
-  }, [locationFilter, categoryFilter, dateTimeFilter, selectedEvent]);
+  }, [locationFilter, categoryFilter, dateTimeFilter, selectedEvent, createEvent]);
 
   const fetchEvents = async () => {
     try {
@@ -49,7 +54,7 @@ const EventList = () => {
       const data = await response.json();
       console.log("data....", data)
       if (!response.ok) {
-        throw new Error('Failed to fetch data: ' + response.status);
+        throw new Error('Failed to Fetch Data: ' + response.status);
       }
       let filteredEvents = data;
       if (locationFilter) {
@@ -64,9 +69,23 @@ const EventList = () => {
       }
       setEvents(filteredEvents);
     } catch (error) {
-      console.error('Error fetching events:', error);
+      console.error('Error Fetching Events:', error);
       setError(error.message);
     }
+  };
+
+  const makeLabelsUnique = (options) => {
+    const uniqueLabels = new Set();
+    const uniqueOptions = [];
+
+    options.forEach((option) => {
+      if (!uniqueLabels.has(option.label.toLowerCase())) {
+        uniqueLabels.add(option.label.toLowerCase());
+        uniqueOptions.push(option);
+      }
+    });
+
+    return uniqueOptions;
   };
 
   const handleLocationChange = (event) => {
@@ -88,6 +107,13 @@ const EventList = () => {
   const handleCancelUpdate = () => {
     setSelectedEvent(null);
   };
+  const handleCreateClick = (event) => {
+    setCreateEvent(true)
+  };
+
+  const handleCancelCreate = () => {
+    setCreateEvent(false)
+  };
 
   const handleDeleteEvent = async (eventId) => {
     try {
@@ -104,6 +130,9 @@ const EventList = () => {
     }
   };
 
+  const uniqueLocations = makeLabelsUnique(locations);
+  const uniqueCategories = makeLabelsUnique(categories);
+
   return (
     <div>
       {error ? (
@@ -119,13 +148,13 @@ const EventList = () => {
           <div>
             {createEvent ? (
               <div>
-                <Button variant="contained" onClick={() => setCreateEvent(false)}>Back to Event List</Button>
-                <EventCreationForm />
+                <Button variant="contained" onClick={handleCancelCreate}>Back to Event List</Button>
+                <EventCreationForm onCancleCreate={handleCancelCreate} />
               </div>
             ) : (
               <div>
                 <h2>Event List</h2>
-                <Button variant="contained" color="primary" onClick={() => setCreateEvent(true)}>Create New Event</Button>
+                <Button variant="contained" color="primary" onClick={handleCreateClick}>Create New Event</Button>
                 <div>
                   {/* Location filter */}
                   <FormControl sx={{ m: 1, minWidth: 120 }}>
@@ -136,7 +165,7 @@ const EventList = () => {
                       value={locationFilter}
                       onChange={handleLocationChange}
                     >
-                      {locations.map((location) => (
+                      {uniqueLocations.map((location) => (
                         <MenuItem key={location.value} value={location.value}>{location.label}</MenuItem>
                       ))}
                     </Select>
@@ -151,7 +180,7 @@ const EventList = () => {
                       value={categoryFilter}
                       onChange={handleCategoryChange}
                     >
-                      {categories.map((category) => (
+                      {uniqueCategories.map((category) => (
                         <MenuItem key={category.value} value={category.value}>{category.label}</MenuItem>
                       ))}
                     </Select>

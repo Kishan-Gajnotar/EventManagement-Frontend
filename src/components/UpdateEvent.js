@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import EventList from './EventList';
 
 const UpdateEvent = ({ eventData, onCancelUpdate }) => {
-    // Function to format date and time to match the datetime-local input type format
-
     const [showUpdateEvent, setShowUpdateEvent] = useState(true);
     const formatDate = (dateTimeString) => {
         const date = new Date(dateTimeString);
@@ -57,16 +54,10 @@ const UpdateEvent = ({ eventData, onCancelUpdate }) => {
 
             alert('Event updated successfully!');
             onCancelUpdate();
-            // setShowUpdateEvent(false);
-
         } catch (error) {
             console.error('Error updating event:', error);
         }
     };
-
-    // const handleBack = () => {
-    //     setShowUpdateEvent(false); // Hide UpdateEvent component to show EventList component
-    // };
 
     return (
         <div>
@@ -147,7 +138,6 @@ const UpdateEvent = ({ eventData, onCancelUpdate }) => {
                 />
             </Box>
             <Button variant="contained" type="submit" onClick={handleUpdate}>Update</Button>
-            {/* <Button variant="contained" onClick={handleBack}>Back</Button> Back button */}
         </div>
     );
 };
