@@ -20,16 +20,10 @@ const locations = [
   { value: 'Ahmedabad', label: 'Ahmedabad' },
   { value: 'Gandhinagar', label: 'Gandhinagar' },
   { value: 'Vadodara', label: 'Vadodara' },
-  { value: 'ahmedabad', label: 'Ahmedabad' },
-  { value: 'gandhinagar', label: 'Gandhinagar' },
-  { value: 'vadodara', label: 'Vadodara' },
 ];
 
 const categories = [
   { value: '', label: 'All' },
-  { value: 'music', label: 'Music' },
-  { value: 'dance', label: 'Dance' },
-  { value: 'sports', label: 'Sports' },
   { value: 'Music', label: 'Music' },
   { value: 'Dance', label: 'Dance' },
   { value: 'Sports', label: 'Sports' },
@@ -61,7 +55,7 @@ const EventList = () => {
         filteredEvents = filteredEvents.filter(event => event[4] === locationFilter);
       }
       if (categoryFilter) {
-        filteredEvents = filteredEvents.filter(event => event[5] === categoryFilter);
+        filteredEvents = filteredEvents.filter(event => event[6] === categoryFilter);
       }
       if (dateTimeFilter) {
         const dateTime = new Date(dateTimeFilter).getTime();
@@ -72,20 +66,6 @@ const EventList = () => {
       console.error('Error Fetching Events:', error);
       setError(error.message);
     }
-  };
-
-  const makeLabelsUnique = (options) => {
-    const uniqueLabels = new Set();
-    const uniqueOptions = [];
-
-    options.forEach((option) => {
-      if (!uniqueLabels.has(option.label.toLowerCase())) {
-        uniqueLabels.add(option.label.toLowerCase());
-        uniqueOptions.push(option);
-      }
-    });
-
-    return uniqueOptions;
   };
 
   const handleLocationChange = (event) => {
@@ -130,9 +110,6 @@ const EventList = () => {
     }
   };
 
-  const uniqueLocations = makeLabelsUnique(locations);
-  const uniqueCategories = makeLabelsUnique(categories);
-
   return (
     <div>
       {error ? (
@@ -165,7 +142,7 @@ const EventList = () => {
                       value={locationFilter}
                       onChange={handleLocationChange}
                     >
-                      {uniqueLocations.map((location) => (
+                      {locations.map((location) => (
                         <MenuItem key={location.value} value={location.value}>{location.label}</MenuItem>
                       ))}
                     </Select>
@@ -180,7 +157,7 @@ const EventList = () => {
                       value={categoryFilter}
                       onChange={handleCategoryChange}
                     >
-                      {uniqueCategories.map((category) => (
+                      {categories.map((category) => (
                         <MenuItem key={category.value} value={category.value}>{category.label}</MenuItem>
                       ))}
                     </Select>
