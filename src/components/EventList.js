@@ -98,7 +98,7 @@ const EventList = () => {
   const handleDeleteEvent = async (eventId) => {
     try {
       // Call your delete API with eventId
-      await fetch(`http://127.0.0.1:5000/api/events/delete/${eventId}`, {
+      await fetch(`https://eventmanagement-backend-qcka.onrender.com/api/events/delete/${eventId}`, {
         method: 'DELETE',
       });
 
