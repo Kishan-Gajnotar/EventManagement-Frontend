@@ -44,7 +44,7 @@ const EventList = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/data');
+      const response = await fetch('https://eventmanagement-backend-qcka.onrender.com/api/data');
       const data = await response.json();
       console.log("data....", data)
       if (!response.ok) {
