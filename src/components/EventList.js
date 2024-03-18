@@ -36,7 +36,7 @@ const EventList = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('https://eventmanagement-backend-qcka.onrender.com/api/data');
+      const response = await fetch(`https://eventmanagement-backend-qcka.onrender.com/api/data`);
       const data = await response.json();
       console.log("Data: ", data);
       if (!response.ok) {
@@ -90,9 +90,9 @@ const EventList = () => {
   const handleDeleteEvent = async (eventId) => {
     try {
       // Call your delete API with eventId
-      await fetch('https://eventmanagement-backend-qcka.onrender.com/api/events/delete/${eventId}', {
-        method: 'DELETE',
-      });
+      await fetch(`https://eventmanagement-backend-qcka.onrender.com/api/events/delete/${eventId}`, {
+      method: 'DELETE',
+    });
 
       alert('Event Deleted successfully !!');
       // Refresh events after deletion
