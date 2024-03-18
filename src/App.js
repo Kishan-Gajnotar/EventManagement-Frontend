@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import EventList from './components/EventList';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import { jwtDecode } from "jwt-decode";
+import Box from "@mui/material/Box";
+import NavBar from './components/NavBar';
+
 
 const App = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [googleScriptError, setGoogleScriptError] = useState(false);
-
   useEffect(() => {
     const initializeGoogleSignIn = async () => {
       try {
         /*global google */
-        // const googleScript = await import('https://accounts.google.com/gsi/client');
-        // Initialize Google Sign-In
         google.accounts.id.initialize({
           client_id: '518685472049-v6tuegmek7ec7j0c683atrm59r0pneri.apps.googleusercontent.com',
           callback: handleCallbackResp
@@ -31,41 +29,53 @@ const App = () => {
     };
 
     initializeGoogleSignIn();
-  }, []);
+  }, [isSignedIn]);
 
   const handleCallbackResp = (resp) => {
-    console.log("encoded JWT token", resp.credential);
+    console.log("Encoded JWT token: ", resp.credential);
     const userObject = jwtDecode(resp.credential, { header: true });
-    console.log("userObject..", userObject);
+    console.log("User Object: ",userObject);
     alert('Login successfull !');
     setIsSignedIn(true);
-    document.getElementById("signInDiv").hidden = true;
   };
 
   const handleSignOut = () => {
     setIsSignedIn(false);
-    document.getElementById("signInDiv").hidden = false;
     setGoogleScriptError(false); // Reset error state
+    alert('You have successfully logged out!');
   };
 
+
+
   return (
-    <div className='App'>
+    <div >
       {
         !isSignedIn &&
-        <h1 className="welcome-text">Welcome to the Event Management Project</h1>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '35rem', // Adjust width as needed
+            padding: '4.5rem', // Adjust padding as needed
+            boxSizing: 'border-box',
+            border: '1px solid #dadce0',
+            borderRadius: '8px',
+          }}
+        >
+          <h2 style={{ textAlign: 'center' }}>Sign in</h2>
+          <p style={{ textAlign: 'center' }}>Use your Google Account</p>
+          <div id="signInDiv" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}></div>
+        </Box>
       }
-      <div id="signInDiv"></div>
       {isSignedIn ? (
         <div>
-          <Stack direction="row" spacing={2}>
-            <Button variant="outlined" color="error" onClick={handleSignOut}>
-              Sign Out
-            </Button>
-          </Stack>
+          <NavBar handleSignOut={handleSignOut} />
           <EventList />
         </div>
       ) : null}
-      {googleScriptError && <p>Error loading Google API. Please check your network connection and try again.</p>}
+      {googleScriptError && alert("Error loading Google API. Please check your network connection and try again.")}
     </div>
   );
 };
